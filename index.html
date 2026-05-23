@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAT.after — Menu</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Battambang&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">  
+
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <span>កំពុងផ្ទុក...</span>
+</div>
+
+<!-- LOGIN VIEW -->
+<div id="viewLogin">
+  <div class="login-box">
+    <div class="login-logo">BAT.after</div>
+    <div class="login-tagline">Bar &amp; Dining · Battambang</div>
+    <div class="login-ornament"></div>
+    <div class="login-card">
+      <h2>Admin Login</h2>
+      <input class="login-input" type="password" id="loginPass" placeholder="••••••••" maxlength="32" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="login-btn" onclick="doLogin()">ENTER</button>
+      <div class="login-err" id="loginErr"></div>
+    </div>
+    <button class="login-guest" onclick="showCustomer()">👁 View Menu as Customer</button>
+  </div>
+</div>
+
+<!-- CUSTOMER VIEW -->
+<div id="viewCustomer">
+  <div class="c-hero">
+    <div class="c-hero-pattern"></div>
+    <div class="c-hero-inner">
+      <div class="c-hero-sub">បាត់ដំបង · Battambang</div>
+      <h1 class="c-hero-title">BAT.after<span>ម៉ឺនុយ</span></h1>
+      <div class="c-hero-line"></div>
+      <div class="c-hero-desc">ស្វាគមន៍មកកាន់ BAT.after</div>
+    </div>
+  </div>
+  <div class="c-tabs-wrap"><div class="c-tabs" id="cTabs"></div></div>
+  <div class="c-section"><div id="cGrid"></div></div>
+  <button class="fab-admin" onclick="openAdminModal()" title="Admin">⚙</button>
+</div>
+
+<!-- ADMIN MINI LOGIN MODAL -->
+<div class="admin-mini-overlay" id="adminMiniOverlay" onclick="if(event.target===this)closeAdminModal()">
+  <div class="admin-mini-box">
+    <button class="admin-mini-close" onclick="closeAdminModal()">✕</button>
+    <div class="admin-mini-logo">🍺 ADMIN</div>
+    <div class="admin-mini-sub">BAT.after</div>
+    <input class="admin-mini-input" type="password" id="miniPass" placeholder="••••••" maxlength="32" onkeydown="if(event.key==='Enter')doMiniLogin()">
+    <button class="admin-mini-btn" onclick="doMiniLogin()">LOGIN</button>
+    <div class="admin-mini-err" id="miniErr"></div>
+  </div>
+</div>
+
+<!-- ADMIN VIEW -->
+<div id="viewAdmin">
+  <nav class="admin-nav">
+    <div class="admin-nav-logo">⚙ ADMIN PANEL</div>
+    <div class="admin-nav-right">
+      <button class="a-btn" onclick="showCustomer()">👁 Preview</button>
+      <button class="a-btn red" onclick="doLogout()">Logout</button>
+    </div>
+  </nav>
+  <div class="admin-body">
+    <div class="admin-header">
+      <div>
+        <div class="admin-title">MENU MANAGER</div>
+        <div class="admin-subtitle">BAT.after · Battambang</div>
+      </div>
+      <button class="a-btn gold" onclick="openAddItem()">+ ADD ITEM</button>
+    </div>
+    <div class="cat-panel">
+      <div class="cat-panel-head">Manage Categories</div>
+      <div class="cat-chips" id="adminCatChips"></div>
+      <div class="cat-row">
+        <input class="finput" type="text" id="newCatInput" placeholder="New category..." style="height:40px;font-size:13px;">
+        <button class="a-btn gold" onclick="addCategory()" style="height:40px;padding:0 18px;">ADD</button>
+      </div>
+    </div>
+    <div class="admin-tabs" id="adminTabs"></div>
+    <div class="admin-grid" id="adminGrid"></div>
+  </div>
+</div>
+
+<!-- EDIT/ADD MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modalTitle">ADD ITEM</h2>
+      <button class="modal-x" onclick="closeModal()">✕</button>
+    </div>
+    <!-- IMAGE UPLOAD ZONE -->
+    <div class="fgroup">
+      <label class="flabel">រូបភាព</label>
+      <div class="img-drop-zone" id="imgDropZone">
+        <div class="drop-hint">
+          <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+          <span>ចុច ឬ Drag &amp; Drop រូបភាព</span>
+          <span style="font-size:.78rem;opacity:.6;">JPG, PNG, WEBP — max 5MB</span>
+        </div>
+        <div class="upload-bar" id="modalUploadBar"></div>
+      </div>
+      <!-- Separate hidden file input ONLY for modal -->
+      <input type="file" id="modalFileInput" accept="image/*" style="display:none;">
+    </div>
+    <div class="fgroup">
+      <label class="flabel">ឈ្មោះម្ហូប *</label>
+      <input class="finput" type="text" id="fName" placeholder="ឧ. បាយឆា, Angkor Beer...">
+    </div>
+    <div class="fgroup">
+      <label class="flabel">ពិពណ៌នា</label>
+      <textarea class="ftextarea" id="fDesc" placeholder="ពិពណ៌នាខ្លី..."></textarea>
+    </div>
+    <div class="frow">
+      <div class="fgroup">
+        <label class="flabel">តម្លៃ *</label>
+        <input class="finput" type="text" id="fPrice" placeholder="$0.00">
+      </div>
+      <div class="fgroup">
+        <label class="flabel">ប្រភេទ *</label>
+        <select class="fselect finput" id="fCat"></select>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="a-btn red" id="modalDelBtn" onclick="deleteCurrentItem()" style="display:none;">DELETE</button>
+      <button class="a-btn" onclick="closeModal()">CANCEL</button>
+      <button class="a-btn gold" id="modalSaveBtn" onclick="saveItem()">SAVE</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<!-- Separate hidden file input for CARD image upload -->
+<input type="file" id="cardFileInput" accept="image/*" style="display:none;">
+<!-- Additional helper file input (for manual uploads) -->
+<input type="file" id="your-file-input" accept="image/*" style="display:none;">
+
+<script type="module" src="script.js"></script>
+</body>
+</html>
